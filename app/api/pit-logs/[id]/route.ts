@@ -6,9 +6,12 @@ const serviceKey = process.env.SUPABASE_SERVICE_ROLE!;
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await params (Next.js 15 Requirement)
+    const params = await context.params;
+    
     // Supabase Client mit Service Role Key
     const supabase = createClient(url, serviceKey);
     
