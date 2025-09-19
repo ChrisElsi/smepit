@@ -2,8 +2,8 @@
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'SMePit - iRacing Pit Analysis',
-  description: 'Team-basierte Pit-Stop Analyse für iRacing',
+  title: 'SMePit Dashboard',
+  description: 'Motorsport Pit-Stop Dashboard',
 }
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de">
-      <body className="antialiased">
+      <body>
         {children}
       </body>
     </html>

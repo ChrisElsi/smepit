@@ -138,15 +138,18 @@ const Dashboard = () => {
   );
 
   return (
-    <div className={`min-h-screen transition-all duration-300 ${
-      isDarkMode 
-        ? `bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900` 
-        : `bg-gradient-to-br from-gray-50 via-white to-gray-50`
-    }`}>
-      
-      {/* Header */}
-      <header className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800/50' : 'border-gray-200 bg-white/50'} backdrop-blur sticky top-0 z-10`}>
-        <div className="max-w-6xl mx-auto px-6 py-4">
+  <div className="bg-red-500 text-white p-4 text-center">TAILWIND TEST - dieser Text sollte rot mit weißer Schrift sein</div>
+  
+  <div className={`min-h-screen transition-all duration-300 ${
+    isDarkMode 
+      ? `bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900` 
+      : `bg-gradient-to-br from-gray-50 via-white to-gray-50`
+  }`}>
+    
+    {/* Header */}
+    <header className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800/50' : 'border-gray-200 bg-white/50'} backdrop-blur sticky top-0 z-10`}>
+      <div className="max-w-6xl mx-auto px-6 py-4">
+        // ... rest deines Codes
           <div className="flex items-center justify-between">
             <div>
               <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
