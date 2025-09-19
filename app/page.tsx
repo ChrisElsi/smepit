@@ -1,227 +1,337 @@
-﻿'use client'
+﻿import React, { useState, useEffect } from 'react';
+import { Trash2, RefreshCw, Settings, Sun, Moon, Palette } from 'lucide-react';
 
-import { useEffect, useState } from 'react'
+const Dashboard = () => {
+  const [currentTeam, setCurrentTeam] = useState('slowmo');
+  const [pitLogs, setPitLogs] = useState([]);
+  const [teams, setTeams] = useState([]);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [colorTheme, setColorTheme] = useState('blue');
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-interface Team {
-  id: string;
-  slug: string;
-  name: string;
-  description: string;
-  created_at: string;
-}
-
-interface PitLog {
-  id: number;
-  team_slug: string;
-  driver_name: string;
-  car_name: string;
-  session_type: string;
-  track: string;
-  fuel_before_l: number;
-  fuel_added_l: number;
-  fuel_after_l: number;
-  pit_box_time_s: number;
-  tire_change: boolean;
-  compound_after: string;
-  created_at: string;
-}
-
-export default function HomePage() {
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [pitLogs, setPitLogs] = useState<PitLog[]>([]);
-  const [selectedTeam, setSelectedTeam] = useState<string>('slowmo');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchTeams() {
-      try {
-        const response = await fetch('/api/teams');
-        if (!response.ok) throw new Error('Teams laden fehlgeschlagen');
-        const data = await response.json();
-        setTeams(data);
-      } catch (err) {
-        console.error('Teams Error:', err);
-        setError('Teams konnten nicht geladen werden');
-      }
+  const themes = {
+    blue: {
+      primary: 'blue-500',
+      secondary: 'blue-600',
+      accent: 'blue-400',
+      gradient: 'from-blue-600 to-blue-800'
+    },
+    green: {
+      primary: 'green-500',
+      secondary: 'green-600', 
+      accent: 'green-400',
+      gradient: 'from-green-600 to-green-800'
+    },
+    purple: {
+      primary: 'purple-500',
+      secondary: 'purple-600',
+      accent: 'purple-400', 
+      gradient: 'from-purple-600 to-purple-800'
+    },
+    orange: {
+      primary: 'orange-500',
+      secondary: 'orange-600',
+      accent: 'orange-400',
+      gradient: 'from-orange-600 to-orange-800'
     }
-    
-    fetchTeams();
+  };
+
+  const currentTheme = themes[colorTheme];
+
+  // Mock data für Demo
+  useEffect(() => {
+    setTeams(['slowmo', 'slowmo2', 'slowmo3']);
+    setPitLogs([
+      {
+        id: '1',
+        driver_name: 'Max Test',
+        car_name: 'BMW M4 GT3',
+        session_type: 'Race',
+        track: 'Spa-Francorchamps',
+        fuel_before_l: 35.5,
+        fuel_added_l: 20.0,
+        fuel_after_l: 55.5,
+        pit_box_time_s: 28.4,
+        tire_change: true,
+        compound_after: 'Soft',
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '2', 
+        driver_name: 'Anna Schmidt',
+        car_name: 'Porsche 911 GT3 R',
+        session_type: 'Qualifying',
+        track: 'Nürburgring GP',
+        fuel_before_l: 25.0,
+        fuel_added_l: 15.5,
+        fuel_after_l: 40.5,
+        pit_box_time_s: 32.1,
+        tire_change: false,
+        compound_after: 'Medium',
+        created_at: new Date(Date.now() - 300000).toISOString()
+      }
+    ]);
   }, []);
 
+  // Auto-refresh
   useEffect(() => {
-    async function fetchPitLogs() {
-      if (!selectedTeam) return;
-      
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/pit-logs?team_slug=${selectedTeam}&limit=10`);
-        if (!response.ok) throw new Error('Pit-Logs laden fehlgeschlagen');
-        const result = await response.json();
-        setPitLogs(result.data || []);
-      } catch (err) {
-        console.error('Pit-Logs Error:', err);
-        setError('Pit-Logs konnten nicht geladen werden');
-      } finally {
-        setLoading(false);
-      }
+    if (autoRefresh) {
+      const interval = setInterval(() => {
+        loadPitLogs();
+      }, 5000);
+      return () => clearInterval(interval);
     }
+  }, [autoRefresh, currentTeam]);
 
-    fetchPitLogs();
-  }, [selectedTeam]);
-
-  const formatTime = (seconds: number) => {
-    if (!seconds) return '-';
-    const mins = Math.floor(seconds / 60);
-    const secs = (seconds % 60).toFixed(1);
-    return mins > 0 ? `${mins}:${secs.padStart(4, '0')}` : `${secs}s`;
+  const loadPitLogs = async () => {
+    setIsLoading(true);
+    try {
+      // In echter Implementierung: API-Call
+      // const response = await fetch(`/api/pit-logs?team_slug=${currentTeam}`);
+      // const data = await response.json();
+      // setPitLogs(data);
+      setTimeout(() => setIsLoading(false), 500);
+    } catch (error) {
+      console.error('Fehler beim Laden:', error);
+      setIsLoading(false);
+    }
   };
 
-  const formatFuel = (liters: number) => {
-    return liters ? `${liters.toFixed(1)}L` : '-';
+  const deletePitLog = async (id) => {
+    try {
+      const response = await fetch(`/api/pit-logs/${id}`, { 
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer Chris881hi?jabittellöschen!`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setPitLogs(logs => logs.filter(log => log.id !== id));
+        console.log('Eintrag gelöscht:', result.message);
+      } else {
+        console.error('Delete failed:', response.status);
+        alert('Löschen fehlgeschlagen');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Fehler beim Löschen');
+    }
   };
+
+  const StatCard = ({ title, value, trend, icon: Icon }) => (
+    <div className={`${isDarkMode ? 'bg-slate-800/50' : 'bg-white/50'} backdrop-blur border ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} rounded-xl p-6 transition-all hover:scale-105`}>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>{title}</p>
+          <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{value}</p>
+          <p className={`text-sm text-${currentTheme.primary}`}>{trend}</p>
+        </div>
+        {Icon && <Icon className={`w-8 h-8 text-${currentTheme.primary}`} />}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4">
+    <div className={`min-h-screen transition-all duration-300 ${
+      isDarkMode 
+        ? `bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900` 
+        : `bg-gradient-to-br from-gray-50 via-white to-gray-50`
+    }`}>
+      
+      {/* Header */}
+      <header className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800/50' : 'border-gray-200 bg-white/50'} backdrop-blur sticky top-0 z-10`}>
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                SMePit Dashboard
+              </h1>
+              <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
+                Team: {currentTeam}
+              </p>
+            </div>
+            
+            {/* Controls */}
+            <div className="flex items-center gap-4">
+              {/* Theme Selector */}
+              <div className="relative">
+                <select
+                  value={colorTheme}
+                  onChange={(e) => setColorTheme(e.target.value)}
+                  className={`${isDarkMode ? 'bg-slate-800 text-white border-slate-600' : 'bg-white text-gray-900 border-gray-300'} border rounded-lg px-3 py-2 text-sm`}
+                >
+                  <option value="blue">Blau</option>
+                  <option value="green">Grün</option>
+                  <option value="purple">Lila</option>
+                  <option value="orange">Orange</option>
+                </select>
+              </div>
+
+              {/* Auto-refresh Toggle */}
+              <button
+                onClick={() => setAutoRefresh(!autoRefresh)}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  autoRefresh
+                    ? `bg-${currentTheme.primary} text-white`
+                    : `${isDarkMode ? 'bg-slate-800 text-slate-300' : 'bg-gray-200 text-gray-700'} hover:bg-${currentTheme.primary} hover:text-white`
+                }`}
+              >
+                <RefreshCw className={`w-4 h-4 ${autoRefresh ? 'animate-spin' : ''}`} />
+              </button>
+
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className={`p-2 rounded-lg ${isDarkMode ? 'bg-slate-800 text-yellow-400' : 'bg-gray-200 text-gray-600'} transition-colors`}
+              >
+                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        
+        {/* Team Switcher */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">SMePit Dashboard</h1>
-          <p className="text-gray-600">Live iRacing Team Management & Pit Analysis</p>
-        </div>
-
-        {error && (
-          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            {error}
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-          <div className="lg:col-span-1">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Teams</h2>
-              <div className="space-y-2">
-                {teams.length > 0 ? (
-                  teams.map((team) => (
-                    <button
-                      key={team.slug}
-                      onClick={() => setSelectedTeam(team.slug)}
-                      className={`w-full text-left px-3 py-2 rounded transition-colors ${
-                        selectedTeam === team.slug
-                          ? 'bg-blue-100 text-blue-800 border border-blue-300'
-                          : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                      }`}
-                    >
-                      <div className="font-medium">{team.name}</div>
-                      <div className="text-sm opacity-75">{team.description}</div>
-                    </button>
-                  ))
-                ) : (
-                  <div className="text-gray-500">Teams werden geladen...</div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-3">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">
-                  Pit-Logs {selectedTeam && `(${selectedTeam})`}
-                </h2>
-                <div className="text-sm text-gray-500">
-                  {pitLogs.length} Einträge
-                </div>
-              </div>
-
-              {loading ? (
-                <div className="text-center py-8 text-gray-500">
-                  Pit-Logs werden geladen...
-                </div>
-              ) : pitLogs.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-3 py-2 text-left font-medium text-gray-700">Fahrer</th>
-                        <th className="px-3 py-2 text-left font-medium text-gray-700">Auto</th>
-                        <th className="px-3 py-2 text-left font-medium text-gray-700">Strecke</th>
-                        <th className="px-3 py-2 text-left font-medium text-gray-700">Session</th>
-                        <th className="px-3 py-2 text-right font-medium text-gray-700">Box-Zeit</th>
-                        <th className="px-3 py-2 text-right font-medium text-gray-700">Fuel +</th>
-                        <th className="px-3 py-2 text-center font-medium text-gray-700">Reifen</th>
-                        <th className="px-3 py-2 text-left font-medium text-gray-700">Zeit</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {pitLogs.map((log) => (
-                        <tr key={log.id} className="hover:bg-gray-50">
-                          <td className="px-3 py-2 font-medium">{log.driver_name || '-'}</td>
-                          <td className="px-3 py-2 text-gray-600">{log.car_name || '-'}</td>
-                          <td className="px-3 py-2 text-gray-600">{log.track || '-'}</td>
-                          <td className="px-3 py-2">
-                            <span className={`px-2 py-1 text-xs rounded ${
-                              log.session_type === 'Race' ? 'bg-red-100 text-red-800' :
-                              log.session_type === 'Practice' ? 'bg-green-100 text-green-800' :
-                              'bg-blue-100 text-blue-800'
-                            }`}>
-                              {log.session_type || 'Unknown'}
-                            </span>
-                          </td>
-                          <td className="px-3 py-2 text-right font-mono">
-                            {formatTime(log.pit_box_time_s)}
-                          </td>
-                          <td className="px-3 py-2 text-right font-mono">
-                            {formatFuel(log.fuel_added_l)}
-                          </td>
-                          <td className="px-3 py-2 text-center">
-                            {log.tire_change ? (
-                              <span className="w-3 h-3 bg-green-500 rounded-full inline-block" title="Reifen gewechselt"></span>
-                            ) : (
-                              <span className="w-3 h-3 bg-gray-300 rounded-full inline-block" title="Keine Reifenänderung"></span>
-                            )}
-                          </td>
-                          <td className="px-3 py-2 text-gray-500 text-xs">
-                            {new Date(log.created_at).toLocaleString('de-DE')}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="text-gray-500 mb-2">Keine Pit-Logs für {selectedTeam}</div>
-                  <div className="text-sm text-gray-400">
-                    Daten werden über den iRacing Webhook empfangen
-                  </div>
-                </div>
-              )}
-            </div>
+          <div className="flex gap-3">
+            {teams.map((team) => (
+              <button
+                key={team}
+                onClick={() => setCurrentTeam(team)}
+                className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                  currentTeam === team
+                    ? `bg-gradient-to-r ${currentTheme.gradient} text-white shadow-lg`
+                    : `${isDarkMode ? 'bg-slate-800/50 text-slate-300' : 'bg-white/50 text-gray-700'} hover:bg-${currentTheme.primary} hover:text-white`
+                }`}
+              >
+                {team}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-4">API Status</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-            <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              <code className="px-2 py-1 bg-gray-100 rounded">GET /api/teams</code>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              <code className="px-2 py-1 bg-gray-100 rounded">GET /api/pit-logs</code>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
-              <code className="px-2 py-1 bg-gray-100 rounded">POST /api/iracing/webhook</code>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-              <span className="text-gray-600">Teams: {teams.length} • Logs: {pitLogs.length}</span>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <StatCard title="Durchschn. Pit-Zeit" value="28.4s" trend="+2.1s" />
+          <StatCard title="Gesamt Stops" value="24" trend="+3" />
+          <StatCard title="Kraftstoff-Effizienz" value="2.1L/min" trend="-0.3L" />
+          <StatCard title="Reifenwechsel" value="18" trend="+5" />
+        </div>
+
+        {/* Pit Logs Table */}
+        <div className={`${isDarkMode ? 'bg-slate-800/50' : 'bg-white/50'} backdrop-blur border ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} rounded-xl overflow-hidden`}>
+          <div className="px-6 py-4 border-b border-slate-700">
+            <div className="flex items-center justify-between">
+              <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Pit-Stop Protokoll
+              </h2>
+              <button
+                onClick={loadPitLogs}
+                disabled={isLoading}
+                className={`px-4 py-2 bg-${currentTheme.primary} text-white rounded-lg hover:bg-${currentTheme.secondary} disabled:opacity-50 transition-colors`}
+              >
+                {isLoading ? 'Lädt...' : 'Aktualisieren'}
+              </button>
             </div>
           </div>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className={`${isDarkMode ? 'bg-slate-700/50' : 'bg-gray-100/50'}`}>
+                <tr>
+                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Fahrer</th>
+                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Fahrzeug</th>
+                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Session</th>
+                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Strecke</th>
+                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Kraftstoff</th>
+                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Box-Zeit</th>
+                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Reifen</th>
+                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Zeit</th>
+                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pitLogs.map((log, index) => (
+                  <tr 
+                    key={log.id} 
+                    className={`border-t ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} hover:${isDarkMode ? 'bg-slate-700/30' : 'bg-gray-50'} transition-colors`}
+                  >
+                    <td className={`px-4 py-3 ${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>
+                      {log.driver_name}
+                    </td>
+                    <td className={`px-4 py-3 ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
+                      {log.car_name}
+                    </td>
+                    <td className={`px-4 py-3`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        log.session_type === 'Race' 
+                          ? `bg-red-500/20 text-red-400`
+                          : log.session_type === 'Qualifying'
+                          ? `bg-yellow-500/20 text-yellow-400`
+                          : `bg-${currentTheme.primary}/20 text-${currentTheme.accent}`
+                      }`}>
+                        {log.session_type}
+                      </span>
+                    </td>
+                    <td className={`px-4 py-3 ${isDarkMode ? 'text-slate-300' : 'text-gray-600'} text-sm`}>
+                      {log.track}
+                    </td>
+                    <td className={`px-4 py-3 ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
+                      <div className="text-sm">
+                        <div>+{log.fuel_added_l}L</div>
+                        <div className="text-xs opacity-70">{log.fuel_before_l}L → {log.fuel_after_l}L</div>
+                      </div>
+                    </td>
+                    <td className={`px-4 py-3 ${isDarkMode ? 'text-white' : 'text-gray-900'} font-mono`}>
+                      {log.pit_box_time_s}s
+                    </td>
+                    <td className={`px-4 py-3`}>
+                      {log.tire_change ? (
+                        <div className="text-sm">
+                          <div className={`text-${currentTheme.primary}`}>Gewechselt</div>
+                          <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>{log.compound_after}</div>
+                        </div>
+                      ) : (
+                        <span className={`${isDarkMode ? 'text-slate-500' : 'text-gray-400'} text-sm`}>Behalten</span>
+                      )}
+                    </td>
+                    <td className={`px-4 py-3 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'} text-sm`}>
+                      {new Date(log.created_at).toLocaleTimeString('de-DE', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => deletePitLog(log.id)}
+                        className={`p-2 rounded-lg text-red-400 hover:bg-red-500/20 transition-colors`}
+                        title="Eintrag löschen"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {pitLogs.length === 0 && (
+            <div className={`px-6 py-12 text-center ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
+              Keine Pit-Stop-Daten für Team "{currentTeam}" vorhanden.
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;
