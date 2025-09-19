@@ -26,10 +26,10 @@ const Dashboard = () => {
       gradient: 'from-green-600 to-green-800'
     },
     purple: {
-      primary: 'purple-500',
-      secondary: 'purple-600',
-      accent: 'purple-400', 
-      gradient: 'from-purple-600 to-purple-800'
+      primary: 'violet-500',
+      secondary: 'violet-600',
+      accent: 'violet-400', 
+      gradient: 'from-violet-600 to-violet-800'
     },
     orange: {
       primary: 'orange-500',
@@ -128,8 +128,8 @@ const Dashboard = () => {
     <div className={`${isDarkMode ? 'bg-slate-800/50' : 'bg-white/50'} backdrop-blur border ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} rounded-xl p-6 transition-all hover:scale-105`}>
       <div className="flex items-center justify-between">
         <div>
-          <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>{title}</p>
-          <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{value}</p>
+          <p className={`text-sm text-${currentTheme.accent}`}>{title}</p>
+          <p className={`text-2xl font-bold text-${currentTheme.primary}`}>{value}</p>
           <p className={`text-sm text-${currentTheme.primary}`}>{trend}</p>
         </div>
         {Icon && <Icon className={`w-8 h-8 text-${currentTheme.primary}`} />}
@@ -138,201 +138,224 @@ const Dashboard = () => {
   );
 
   return (
-  <div className="bg-red-500 text-white p-4 text-center">TAILWIND TEST - dieser Text sollte rot mit weißer Schrift sein</div>
-  
-  <div className={`min-h-screen transition-all duration-300 ${
-    isDarkMode 
-      ? `bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900` 
-      : `bg-gradient-to-br from-gray-50 via-white to-gray-50`
-  }`}>
-    
-    {/* Header */}
-    <header className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800/50' : 'border-gray-200 bg-white/50'} backdrop-blur sticky top-0 z-10`}>
-      <div className="max-w-6xl mx-auto px-6 py-4">
-        // ... rest deines Codes
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                SMePit Dashboard
-              </h1>
-              <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
-                Team: {currentTeam}
-              </p>
+    <div className={`min-h-screen transition-all duration-300 ${
+        isDarkMode 
+          ? `bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900` 
+          : `bg-gradient-to-br from-gray-50 via-white to-gray-50`
+      }`}>
+        
+        {/* Header */}
+        <header className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800/50' : 'border-gray-200 bg-white/50'} backdrop-blur sticky top-0 z-10`}>
+          <div className="max-w-6xl mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              {/* Left Logo */}
+              <img 
+                src="https://i.ibb.co/YhHtxmr/SMe-Logo-Blau-Setup-Cover-1280x720.png" 
+                alt="SMe Logo" 
+                className="w-30 h-auto"
+                style={{width: '120px'}}
+              />
+              
+              {/* Center Content */}
+              <div className="flex flex-col items-center">
+                {/* Main Logo */}
+                <img 
+                  src="https://i.ibb.co/fdJjKcM7/SMe-Sport-blau-weiss.png" 
+                  alt="SMe Sport Logo" 
+                  className="mb-2"
+                  style={{width: '400px', height: 'auto'}}
+                />
+                <h1 className={`text-2xl font-bold text-${currentTheme.primary}`}>
+                  SMePit Dashboard
+                </h1>
+                <p className={`text-sm text-${currentTheme.accent}`}>
+                  Team: {currentTeam}
+                </p>
+              </div>
+              
+              {/* Right Logo */}
+              <img 
+                src="https://i.ibb.co/YhHtxmr/SMe-Logo-Blau-Setup-Cover-1280x720.png" 
+                alt="SMe Logo" 
+                className="w-30 h-auto"
+                style={{width: '120px'}}
+              />
             </div>
             
-            {/* Controls */}
-            <div className="flex items-center gap-4">
-              {/* Theme Selector */}
-              <div className="relative">
-                <select
-                  value={colorTheme}
-                  onChange={(e) => setColorTheme(e.target.value)}
-                  className={`${isDarkMode ? 'bg-slate-800 text-white border-slate-600' : 'bg-white text-gray-900 border-gray-300'} border rounded-lg px-3 py-2 text-sm`}
-                >
-                  <option value="blue">Blau</option>
-                  <option value="green">Grün</option>
-                  <option value="purple">Lila</option>
-                  <option value="orange">Orange</option>
-                </select>
-              </div>
-
-              {/* Auto-refresh Toggle */}
-              <button
-                onClick={() => setAutoRefresh(!autoRefresh)}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  autoRefresh
-                    ? `bg-${currentTheme.primary} text-white`
-                    : `${isDarkMode ? 'bg-slate-800 text-slate-300' : 'bg-gray-200 text-gray-700'} hover:bg-${currentTheme.primary} hover:text-white`
-                }`}
-              >
-                <RefreshCw className={`w-4 h-4 ${autoRefresh ? 'animate-spin' : ''}`} />
-              </button>
-
-              {/* Dark Mode Toggle */}
-              <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className={`p-2 rounded-lg ${isDarkMode ? 'bg-slate-800 text-yellow-400' : 'bg-gray-200 text-gray-600'} transition-colors`}
-              >
-                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        
-        {/* Team Switcher */}
-        <div className="mb-8">
-          <div className="flex gap-3">
-            {teams.map((team) => (
-              <button
-                key={team}
-                onClick={() => setCurrentTeam(team)}
-                className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                  currentTeam === team
-                    ? `bg-gradient-to-r ${currentTheme.gradient} text-white shadow-lg`
-                    : `${isDarkMode ? 'bg-slate-800/50 text-slate-300' : 'bg-white/50 text-gray-700'} hover:bg-${currentTheme.primary} hover:text-white`
-                }`}
-              >
-                {team}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <StatCard title="Durchschn. Pit-Zeit" value="28.4s" trend="+2.1s" />
-          <StatCard title="Gesamt Stops" value="24" trend="+3" />
-          <StatCard title="Kraftstoff-Effizienz" value="2.1L/min" trend="-0.3L" />
-          <StatCard title="Reifenwechsel" value="18" trend="+5" />
-        </div>
-
-        {/* Pit Logs Table */}
-        <div className={`${isDarkMode ? 'bg-slate-800/50' : 'bg-white/50'} backdrop-blur border ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} rounded-xl overflow-hidden`}>
-          <div className="px-6 py-4 border-b border-slate-700">
-            <div className="flex items-center justify-between">
-              <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                Pit-Stop Protokoll
-              </h2>
-              <button
-                onClick={loadPitLogs}
-                disabled={isLoading}
-                className={`px-4 py-2 bg-${currentTheme.primary} text-white rounded-lg hover:bg-${currentTheme.secondary} disabled:opacity-50 transition-colors`}
-              >
-                {isLoading ? 'Lädt...' : 'Aktualisieren'}
-              </button>
-            </div>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className={`${isDarkMode ? 'bg-slate-700/50' : 'bg-gray-100/50'}`}>
-                <tr>
-                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Fahrer</th>
-                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Fahrzeug</th>
-                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Session</th>
-                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Strecke</th>
-                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Kraftstoff</th>
-                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Box-Zeit</th>
-                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Reifen</th>
-                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Zeit</th>
-                  <th className={`px-4 py-3 text-left text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>Aktionen</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pitLogs.map((log, index) => (
-                  <tr 
-                    key={log.id} 
-                    className={`border-t ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} hover:${isDarkMode ? 'bg-slate-700/30' : 'bg-gray-50'} transition-colors`}
+              {/* Controls Row */}
+              <div className="flex items-center justify-center gap-4 mt-4">
+                {/* Theme Selector */}
+                <div className="relative">
+                  <select
+                    value={colorTheme}
+                    onChange={(e) => setColorTheme(e.target.value)}
+                    className={`${isDarkMode ? 'bg-slate-800 text-white border-slate-600' : 'bg-white text-gray-900 border-gray-300'} border rounded-lg px-3 py-2 text-sm`}
                   >
-                    <td className={`px-4 py-3 ${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>
-                      {log.driver_name}
-                    </td>
-                    <td className={`px-4 py-3 ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
-                      {log.car_name}
-                    </td>
-                    <td className={`px-4 py-3`}>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        log.session_type === 'Race' 
-                          ? `bg-red-500/20 text-red-400`
-                          : log.session_type === 'Qualifying'
-                          ? `bg-yellow-500/20 text-yellow-400`
-                          : `bg-${currentTheme.primary}/20 text-${currentTheme.accent}`
-                      }`}>
-                        {log.session_type}
-                      </span>
-                    </td>
-                    <td className={`px-4 py-3 ${isDarkMode ? 'text-slate-300' : 'text-gray-600'} text-sm`}>
-                      {log.track}
-                    </td>
-                    <td className={`px-4 py-3 ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
-                      <div className="text-sm">
-                        <div>+{log.fuel_added_l}L</div>
-                        <div className="text-xs opacity-70">{log.fuel_before_l}L → {log.fuel_after_l}L</div>
-                      </div>
-                    </td>
-                    <td className={`px-4 py-3 ${isDarkMode ? 'text-white' : 'text-gray-900'} font-mono`}>
-                      {log.pit_box_time_s}s
-                    </td>
-                    <td className={`px-4 py-3`}>
-                      {log.tire_change ? (
-                        <div className="text-sm">
-                          <div className={`text-${currentTheme.primary}`}>Gewechselt</div>
-                          <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>{log.compound_after}</div>
-                        </div>
-                      ) : (
-                        <span className={`${isDarkMode ? 'text-slate-500' : 'text-gray-400'} text-sm`}>Behalten</span>
-                      )}
-                    </td>
-                    <td className={`px-4 py-3 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'} text-sm`}>
-                      {new Date(log.created_at).toLocaleTimeString('de-DE', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </td>
-                    <td className="px-4 py-3">
-                      <button
-                        onClick={() => deletePitLog(log.id)}
-                        className={`p-2 rounded-lg text-red-400 hover:bg-red-500/20 transition-colors`}
-                        title="Eintrag löschen"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    <option value="blue">Blau</option>
+                    <option value="green">Grün</option>
+                    <option value="purple">Violet</option>
+                    <option value="orange">Orange</option>
+                  </select>
+                </div>
+
+                {/* Auto-refresh Toggle */}
+                <button
+                  onClick={() => setAutoRefresh(!autoRefresh)}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    autoRefresh
+                      ? `bg-${currentTheme.primary} text-white`
+                      : `${isDarkMode ? 'bg-slate-800 text-slate-300' : 'bg-gray-200 text-gray-700'} hover:bg-${currentTheme.primary} hover:text-white`
+                  }`}
+                >
+                  <RefreshCw className={`w-4 h-4 ${autoRefresh ? 'animate-spin' : ''}`} />
+                </button>
+
+                {/* Dark Mode Toggle */}
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className={`p-2 rounded-lg ${isDarkMode ? 'bg-slate-800 text-yellow-400' : 'bg-gray-200 text-gray-600'} transition-colors`}
+                >
+                  {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <div className="max-w-6xl mx-auto px-6 py-8">
+          
+          {/* Team Switcher */}
+          <div className="mb-8">
+            <div className="flex gap-3">
+              {teams.map((team) => (
+                <button
+                  key={team}
+                  onClick={() => setCurrentTeam(team)}
+                  className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                    currentTeam === team
+                      ? `bg-gradient-to-r ${currentTheme.gradient} text-white shadow-lg`
+                      : `${isDarkMode ? 'bg-slate-800/50 text-slate-300' : 'bg-white/50 text-gray-700'} hover:bg-${currentTheme.primary} hover:text-white`
+                  }`}
+                >
+                  {team}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {pitLogs.length === 0 && (
-            <div className={`px-6 py-12 text-center ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
-              Keine Pit-Stop-Daten für Team "{currentTeam}" vorhanden.
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <StatCard title="Durchschn. Pit-Zeit" value="28.4s" trend="+2.1s" />
+            <StatCard title="Gesamt Stops" value="24" trend="+3" />
+            <StatCard title="Kraftstoff-Effizienz" value="2.1L/min" trend="-0.3L" />
+            <StatCard title="Reifenwechsel" value="18" trend="+5" />
+          </div>
+
+          {/* Pit Logs Table */}
+          <div className={`${isDarkMode ? 'bg-slate-800/50' : 'bg-white/50'} backdrop-blur border ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} rounded-xl overflow-hidden`}>
+            <div className="px-6 py-4 border-b border-slate-700">
+              <div className="flex items-center justify-between">
+                <h2 className={`text-xl font-semibold text-${currentTheme.primary}`}>
+                  Pit-Stop Protokoll
+                </h2>
+                <button
+                  onClick={loadPitLogs}
+                  disabled={isLoading}
+                  className={`px-4 py-2 bg-${currentTheme.primary} text-white rounded-lg hover:bg-${currentTheme.secondary} disabled:opacity-50 transition-colors`}
+                >
+                  {isLoading ? 'Lädt...' : 'Aktualisieren'}
+                </button>
+              </div>
             </div>
-          )}
+            
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className={`${isDarkMode ? 'bg-slate-700/50' : 'bg-gray-100/50'}`}>
+                  <tr>
+                    <th className={`px-4 py-3 text-left text-sm font-medium text-${currentTheme.accent}`}>Fahrer</th>
+                    <th className={`px-4 py-3 text-left text-sm font-medium text-${currentTheme.accent}`}>Fahrzeug</th>
+                    <th className={`px-4 py-3 text-left text-sm font-medium text-${currentTheme.accent}`}>Session</th>
+                    <th className={`px-4 py-3 text-left text-sm font-medium text-${currentTheme.accent}`}>Strecke</th>
+                    <th className={`px-4 py-3 text-left text-sm font-medium text-${currentTheme.accent}`}>Kraftstoff</th>
+                    <th className={`px-4 py-3 text-left text-sm font-medium text-${currentTheme.accent}`}>Box-Zeit</th>
+                    <th className={`px-4 py-3 text-left text-sm font-medium text-${currentTheme.accent}`}>Reifen</th>
+                    <th className={`px-4 py-3 text-left text-sm font-medium text-${currentTheme.accent}`}>Zeit</th>
+                    <th className={`px-4 py-3 text-left text-sm font-medium text-${currentTheme.accent}`}>Aktionen</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pitLogs.map((log, index) => (
+                    <tr 
+                      key={log.id} 
+                      className={`border-t ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} hover:${isDarkMode ? 'bg-slate-700/30' : 'bg-gray-50'} transition-colors`}
+                    >
+                      <td className={`px-4 py-3 text-${currentTheme.primary} font-medium`}>
+                        {log.driver_name}
+                      </td>
+                      <td className={`px-4 py-3 text-${currentTheme.accent}`}>
+                        {log.car_name}
+                      </td>
+                      <td className={`px-4 py-3`}>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          log.session_type === 'Race' 
+                            ? `bg-red-500/20 text-red-400`
+                            : log.session_type === 'Qualifying'
+                            ? `bg-yellow-500/20 text-yellow-400`
+                            : `bg-${currentTheme.primary}/20 text-${currentTheme.accent}`
+                        }`}>
+                          {log.session_type}
+                        </span>
+                      </td>
+                      <td className={`px-4 py-3 text-${currentTheme.accent} text-sm`}>
+                        {log.track}
+                      </td>
+                      <td className={`px-4 py-3 text-${currentTheme.accent}`}>
+                        <div className="text-sm">
+                          <div>+{log.fuel_added_l}L</div>
+                          <div className="text-xs opacity-70">{log.fuel_before_l}L → {log.fuel_after_l}L</div>
+                        </div>
+                      </td>
+                      <td className={`px-4 py-3 text-${currentTheme.primary} font-mono`}>
+                        {log.pit_box_time_s}s
+                      </td>
+                      <td className={`px-4 py-3`}>
+                        {log.tire_change ? (
+                          <div className="text-sm">
+                            <div className={`text-${currentTheme.primary}`}>Gewechselt</div>
+                            <div className={`text-xs text-${currentTheme.accent}`}>{log.compound_after}</div>
+                          </div>
+                        ) : (
+                          <span className={`text-${currentTheme.accent} text-sm`}>Behalten</span>
+                        )}
+                      </td>
+                      <td className={`px-4 py-3 text-${currentTheme.accent} text-sm`}>
+                        {new Date(log.created_at).toLocaleTimeString('de-DE', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => deletePitLog(log.id)}
+                          className={`p-2 rounded-lg text-red-400 hover:bg-red-500/20 transition-colors`}
+                          title="Eintrag löschen"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {pitLogs.length === 0 && (
+              <div className={`px-6 py-12 text-center text-${currentTheme.accent}`}>
+                Keine Pit-Stop-Daten für Team "{currentTeam}" vorhanden.
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
