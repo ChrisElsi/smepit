@@ -1,11 +1,8 @@
 ﻿/** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  distDir: '.next',
-  trailingSlash: true,
-  images: {
-    unoptimized: true
-  }
+  // output: 'export',   // ❌ entfernen
+  // optional:
+  // output: 'standalone' // ✅ für Vercel ok
 };
-
-module.exports = nextConfig;
+export default nextConfig; // bei .mjs
+// module.exports = nextConfig; // bei .js

@@ -33,3 +33,5 @@ iRacingBridge/obj/
 *.user
 *.suo
 *.cache
+.vercel
+.env*.local

@@ -13,6 +13,9 @@ function adminSupabase() {
   });
 }
 
+export const runtime   = 'nodejs';
+export const dynamic   = 'force-dynamic';
+export const revalidate = 0;
 // POST /api/iracing/webhook - Empfängt Daten von der iRacing Bridge
 export async function POST(request: NextRequest) {
   try {
