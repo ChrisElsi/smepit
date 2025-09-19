@@ -1,21 +1,4 @@
-﻿// app/page.tsx
-'use client';
-
-import React, { useState, useEffect } from 'react';
-import { Trash2, RefreshCw, Settings, Sun, Moon, Palette } from 'lucide-react';
-
-export default function Dashboard() {
-  const [ready, setReady] = useState(false);
-  useEffect(() => setReady(true), []);
-
-  return (
-    <main className="p-4">
-      {/* dein bisheriger Inhalt */}
-    </main>
-  );
-}
-
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Trash2, RefreshCw, Settings, Sun, Moon, Palette } from 'lucide-react';
 
 const Dashboard = () => {
