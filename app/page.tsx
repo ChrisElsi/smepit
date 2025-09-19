@@ -124,7 +124,7 @@ const Dashboard = () => {
     }
   };
 
-  const StatCard = ({ title, value, trend, icon: Icon }) => (
+  const StatCard = ({ title, value, trend, icon: Icon }: { title: string; value: string; trend: string; icon?: any }) => (
     <div className={`${isDarkMode ? 'bg-slate-800/50' : 'bg-white/50'} backdrop-blur border ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} rounded-xl p-6 transition-all hover:scale-105`}>
       <div className="flex items-center justify-between">
         <div>
