@@ -9,16 +9,42 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Supabase Client mit Service Role Key
     const supabase = createClient(url, serviceKey);
+    
+    // Token aus Header prüfen (optional für Sicherheit)
+    const authHeader = request.headers.get('authorization');
+    const deleteToken = process.env.DASH_DELETE_TOKEN;
+    
+    if (deleteToken && authHeader !== `Bearer ${deleteToken}`) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' }, 
+        { status: 401 }
+      );
+    }
+
+    // Eintrag aus Datenbank löschen
     const { error } = await supabase
       .from('pit_logs')
       .delete()
       .eq('id', params.id);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase Delete Error:', error);
+      throw error;
+    }
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ 
+      success: true, 
+      message: `Pit-Log ${params.id} gelöscht`,
+      deleted_id: params.id
+    });
+
+  } catch (error: any) {
+    console.error('Delete API Error:', error);
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message || 'Unbekannter Fehler beim Löschen'
+    }, { status: 500 });
   }
 }
