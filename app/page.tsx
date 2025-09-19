@@ -1,4 +1,4 @@
-﻿//import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Trash2, RefreshCw, Settings, Sun, Moon, Palette } from 'lucide-react';
 
 const Dashboard = () => {
@@ -40,7 +40,63 @@ const Dashboard = () => {
   const currentTheme = themes[colorTheme];
 
   // Mock data für Demo
+  useEffect(() => {
+    setTeams(['slowmo', 'slowmo2', 'slowmo3']);
+    setPitLogs([
+      {
+        id: '1',
+        driver_name: 'Max Test',
+        car_name: 'BMW M4 GT3',
+        session_type: 'Race',
+        track: 'Spa-Francorchamps',
+        fuel_before_l: 35.5,
+        fuel_added_l: 20.0,
+        fuel_after_l: 55.5,
+        pit_box_time_s: 28.4,
+        tire_change: true,
+        compound_after: 'Soft',
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '2', 
+        driver_name: 'Anna Schmidt',
+        car_name: 'Porsche 911 GT3 R',
+        session_type: 'Qualifying',
+        track: 'Nürburgring GP',
+        fuel_before_l: 25.0,
+        fuel_added_l: 15.5,
+        fuel_after_l: 40.5,
+        pit_box_time_s: 32.1,
+        tire_change: false,
+        compound_after: 'Medium',
+        created_at: new Date(Date.now() - 300000).toISOString()
+      }
+    ]);
+  }, []);
 
+  // Auto-refresh
+  useEffect(() => {
+    if (autoRefresh) {
+      const interval = setInterval(() => {
+        loadPitLogs();
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [autoRefresh, currentTeam]);
+
+  const loadPitLogs = async () => {
+    setIsLoading(true);
+    try {
+      // In echter Implementierung: API-Call
+      // const response = await fetch(`/api/pit-logs?team_slug=${currentTeam}`);
+      // const data = await response.json();
+      // setPitLogs(data);
+      setTimeout(() => setIsLoading(false), 500);
+    } catch (error) {
+      console.error('Fehler beim Laden:', error);
+      setIsLoading(false);
+    }
+  };
 
   const deletePitLog = async (id) => {
     try {
