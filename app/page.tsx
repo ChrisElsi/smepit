@@ -1,4 +1,6 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿'use client';
+
+import React, { useState, useEffect } from 'react';
 import { Trash2, RefreshCw, Settings, Sun, Moon, Palette } from 'lucide-react';
 
 const Dashboard = () => {
